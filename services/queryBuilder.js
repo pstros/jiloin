@@ -78,7 +78,7 @@ angular.module('jitsiLogs').service('QueryBuilder', ['Config', function(Config) 
                 if(useRegex) {
                     return "select *" +
                         " from " + fieldsIn[fieldName] +
-                        " where " + fieldName + "=~/.*" + (value || '') +
+                        " where " + fieldName + "=~ /.*" + (value || '') +
                         ".*/ and time > now() - " + Config.daysAgo + 'd';
                 } else {
                     return "select *" +

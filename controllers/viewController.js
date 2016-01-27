@@ -27,8 +27,10 @@ angular.module('jitsiLogs').
 
     $scope.fieldName = $location.path().split('/')[1];
     if($routeParams[$scope.fieldName]) {
-        $scope.query = QueryBuilder.getQueryForValue($scope.fieldName,
-            $routeParams[$scope.fieldName], $scope.fieldName === 'room_jid');
+        // Since InfluxDB 0.9+ regex is only supported for tag data.  In order to allow this from jiloin jicoco will
+        // need to insert the data for room_jid as a tag instead of a field.
+        //$scope.query = QueryBuilder.getQueryForValue($scope.fieldName, $routeParams[$scope.fieldName], $scope.fieldName === 'room_jid');
+        $scope.query = QueryBuilder.getQueryForValue($scope.fieldName, $routeParams[$scope.fieldName], false);
     } else {
         $scope.query = QueryBuilder.getQueryForSeries('conference_room');
     }

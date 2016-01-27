@@ -8,7 +8,7 @@
                     ng-repeat="column in columnsOrder"
                     class="columnName">{{data.columns[column]}}</td>
             </tr>
-            <tr dir-paginate="row in data.points  | itemsPerPage: 10" pagination-id="data.name"
+            <tr dir-paginate="row in data.values  | itemsPerPage: 10" pagination-id="data.name"
                 ng-class-even="'lightRow'"
                 ng-class-odd="'darkRow'"
                 ng-click="goTo($index)">

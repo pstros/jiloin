@@ -34,7 +34,9 @@ angular.module('jitsiLogs').directive('dbTable', ['QueryBuilder', '$location', '
             $scope.goTo = function($index) {
                 $location.path($scope.getLink($index));
             };
+
             var clickableField = QueryBuilder.getClickableField($scope.data.name);
+
             for(var i = 0; i < $scope.data.columns.length; i++) {
                 if($scope.data.columns[i] === clickableField) {
                     $scope.linkColumn = i;
@@ -42,7 +44,7 @@ angular.module('jitsiLogs').directive('dbTable', ['QueryBuilder', '$location', '
             }
             $scope.getLink = function($index) {
                 return '/' + $scope.data.columns[$scope.linkColumn].replace('/', '%2F') +
-                    '/' + $scope.data.points[$index][$scope.linkColumn].replace('/', '%2F');
+                    '/' + $scope.data.values[$index][$scope.linkColumn].replace('/', '%2F');
             };
             var ordered = QueryBuilder.getCorrectColumnsOrder($scope.data.name);
             if(!ordered) {

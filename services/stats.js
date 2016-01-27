@@ -90,8 +90,8 @@ angular.module('jitsiLogs').service('Stats', [function() {
         if(!valueColumn) {
             return data;
         }
-        for(i = peerStats.points.length - 1; i >= 0; i--) {
-            addPointToData(data, peerStats.points[i], valueColumn);
+        for(i = peerStats.values.length - 1; i >= 0; i--) {
+            addPointToData(data, peerStats.values[i], valueColumn);
         }
         return data;
     }
@@ -106,7 +106,7 @@ angular.module('jitsiLogs').service('Stats', [function() {
     }
     function addPointToData(data, point, valueColumn) {
         var groupColumn = 0;
-        if(point.length !== 5) {
+        if(point.length !== 4) {
             return data;
         }
         var charts = data.charts;
@@ -159,11 +159,11 @@ angular.module('jitsiLogs').service('Stats', [function() {
                     data.info[type] = {
                         columns: ['time', type],
                         name: type,
-                        points: []};
+                        values: []};
                 }
-                var previous = data.info[type].points.slice(-1)[0];
+                var previous = data.info[type].values.slice(-1)[0];
                 if (!previous || value[type] !== previous[1]) {
-                    data.info[type].points.push([point[0], value[type]]);
+                    data.info[type].values.push([point[0], value[type]]);
                 }
                 return true;
             }
@@ -184,16 +184,23 @@ angular.module('jitsiLogs').service('Stats', [function() {
             return options;
         },
         getStatsData: function (response) {
+            if (typeof response['results'][0]['series'] === 'undefined') {
+                console.log("no valid response");
+                return;
+            }
+
+            var series = response['results'][0]['series'];
+
             //find the index of the peer_connection_stats series
-            for (var statsIndex = 0; statsIndex < response.length; statsIndex++) {
-                if (response[statsIndex].name === 'peer_connection_stats') {
+            for (var statsIndex = 0; statsIndex < series.length; statsIndex++) {
+                if (series[statsIndex].name === 'peer_connection_stats') {
                     break;
                 }
             }
-            if(statsIndex === response.length) {
+            if(statsIndex === series.length) {
                 return;
             }
-            var data = getStatsData(response[statsIndex]);
+            var data = getStatsData(series[statsIndex]);
 
             cleanUpStatsWanted();
             return data;

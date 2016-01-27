@@ -26,13 +26,14 @@ angular.module('jitsiLogs').service('Database',['Config', '$q', '$location',
     var databases;
     return {
         connect: function(username, password) {
-            database = new InfluxDB({
-                host: Config.host,
-                port: Config.port,
+            $q.when(influent.createHttpClient({
+                server: [{protocol: "http", host: Config.host, port: parseInt(Config.port)}],
                 username: username,
                 password: password,
                 database: Config.database,
-                ssl: Config.ssl
+                epoch: 'ms'
+            })).then(function(client) {
+                database = client;
             });
         },
         query: function(query, successCallback, errorCallback) {
@@ -47,7 +48,7 @@ angular.module('jitsiLogs').service('Database',['Config', '$q', '$location',
                 $location.path('/');
                 return;
             }
-            $q.when(database.getDatabases()).then(function(response) {
+            $q.when(database.query("show databases")).then(function(response) {
                     databases = response;
                 }
             )
